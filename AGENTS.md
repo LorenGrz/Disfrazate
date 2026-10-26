@@ -124,4 +124,4 @@ Tests: Vitest + React Testing Library for client components; colocated as `*.tes
 
 ## Project backlog
 
-https://github.com/users/LorenGrz/projects/TBD
+https://github.com/users/LorenGrz/projects/2
