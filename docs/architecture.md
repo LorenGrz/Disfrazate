@@ -1,42 +1,36 @@
 # Architecture - Disfrazate
 
-<!--
-Update this file whenever architecture, modules, data model, external services, env vars,
-or deploy change - in the same PR as the code change (see AGENTS.md "Documentation rules").
-This is a skeleton: fill each section in as the project grows, delete the guidance comments
-once real content replaces them.
--->
-
 ## Overview
 
-<!-- 3-5 sentences: what the system does, the main components, and how they fit together. -->
+Next.js 16 server-rendered. La landing y el catálogo son Server Components sobre datos estáticos (`lib/catalog.ts`); el único componente cliente es el buscador (`app/_components/FakeScraper.tsx`), cuyo "scraping" es un log animado por CSS. Fase 2 suma la generación de imágenes (AWS Bedrock) vía Route Handlers; fase 3 el muro (Supabase Realtime).
 
 ## Modules / boundaries
 
-<!-- One entry per module/package/service: its responsibility and what it must not do.
-     Table or list, whichever reads clearer for this stack. -->
+| Módulo             | Responsabilidad                                                           |
+| ------------------ | ------------------------------------------------------------------------- |
+| `lib/catalog.ts`   | Disfraces, tiendas falsas, búsqueda y URL de MercadoLibre. Puro, sin I/O. |
+| `lib/credits.ts`   | Créditos de las fotos de archivo (`public/archivo/`, Wikimedia Commons).  |
+| `app/_components/` | UI compartida; solo `FakeScraper` es `'use client'`.                      |
+| `proxy.ts`         | 404 real para slugs de disfraz inexistentes.                              |
 
 ## Data model
 
-<!-- Main entities/tables and how they relate. Link to the actual schema/migrations/types
-     instead of duplicating them if the project already has one. -->
+Sin base de datos todavía. Tipo `Costume` en `lib/catalog.ts`.
 
 ## Key flows
 
-<!-- The 2-4 flows a new session most needs to understand (e.g. request lifecycle, a core
-     user journey, a background job). One short paragraph each, naming the files involved. -->
+- **Buscar**: `FakeScraper` (form) → estado en el submit → log CSS escalonado → `findCostumes` + link real a MercadoLibre. Sin JS: GET `/buscar?q=`.
+- **Ver disfraz**: `/disfraz/[slug]` (estático vía `generateStaticParams`) → "Ver publicación" (MercadoLibre) o DISFRAZATE → `/disfrazate?disfraz=<slug>`.
 
 ## External services
 
-<!-- Third-party APIs, cloud resources, SaaS dependencies - what each is used for and where
-     the integration lives in the code. -->
+- MercadoLibre: solo links a búsquedas (`mercadoLibreUrl`), sin API.
+- Wikimedia Commons: origen de las fotos de archivo (descargadas al repo).
 
 ## Env vars
 
-<!-- Point at the real source (.env.example) instead of duplicating values; note here only
-     what's not obvious from the variable name. -->
+Ninguna en fase 1.
 
 ## Deploy
 
-<!-- Where this runs (platform, region, account), how a deploy is triggered, and anything
-     manual a new session needs to know before touching it. -->
+Pendiente: Vercel (fase 4).
