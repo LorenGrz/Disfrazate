@@ -115,6 +115,15 @@ body {
   color: color-mix(in srgb, var(--ink) 60%, transparent);
 }
 
+.well {
+  background: var(--ground-raised);
+}
+
+.btn:has(:focus-visible) {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible {
