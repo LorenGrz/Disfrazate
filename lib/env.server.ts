@@ -23,7 +23,7 @@ const schema = z
     NEXT_PUBLIC_SUPABASE_URL: optional(z.url()),
     SUPABASE_SERVICE_ROLE_KEY: optional(z.string().min(1)),
     BEDROCK_TEXT_MODEL: defaulted(
-      z.string().min(1).default("amazon.nova-micro-v1:0"),
+      z.string().min(1).default("amazon.nova-lite-v1:0"),
     ),
     MAX_CUSTOM_COSTUMES: defaulted(
       z.coerce.number().int().positive().default(100),

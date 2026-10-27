@@ -8,7 +8,7 @@ App para el evento SIDEQUEST: "scrapea" (de mentira) tiendas buscando disfraces 
 
 ## Stack
 
-Next.js 16 (App Router, `cacheComponents`), React 19, Tailwind 4, pnpm, Vitest. Fuente Archivo (`next/font`). Generación de imágenes: endpoint de SageMaker con FLUX.2 klein 4B (ADR 0002), `IMAGE_PROVIDER=demo` para desarrollar sin AWS. Validación con zod. Supabase (disfraces scrapeados) y Bedrock Nova Micro (texto).
+Next.js 16 (App Router, `cacheComponents`), React 19, Tailwind 4, pnpm, Vitest. Fuente Archivo (`next/font`). Generación de imágenes: endpoint de SageMaker con FLUX.2 klein 4B (ADR 0002), `IMAGE_PROVIDER=demo` para desarrollar sin AWS. Validación con zod. Supabase (disfraces scrapeados) y Bedrock Nova Lite (texto).
 
 ## Commands
 
@@ -20,7 +20,7 @@ See AGENTS.md for the full table (dev/test/lint/typecheck/format/format:check).
 - `app/page.tsx` landing (hero, buscador `FakeScraper`, drop con 12 destacados, "lo que decimos/hacemos", CTA); `app/disfraces` (60 disfraces, filtro `?cat=`), `app/disfraz/[slug]`, `app/buscar` (fallback sin JS), `app/disfrazate` (portón con `EVENT_CODE` + `Probador` con cámara, 4 escenas en paralelo; se resetea con un cleanup al ocultarse la ruta por `<Activity>`).
 - `lib/*.server.ts` (env, proveedor de imágenes, portón, contadores en memoria), `lib/scenes.ts` + `pick-scenes.ts` + `prompt.ts`, `app/api/{escenas,disfrazar}`.
 - `proxy.ts`: reescribe slugs inexistentes para que `/disfraz/<x>` devuelva 404 real (con `cacheComponents` + `loading.tsx` el `notFound()` llega con 200).
-- Disfraces scrapeados: `POST /api/scrapear` (portón del evento, Nova Micro traduce/modera, foto con el mismo `ImageProvider`, persistencia en Supabase `custom_costumes` + bucket `catalogo`, slugs `s-…`; sin variables de Supabase responde 503). Lecturas con `'use cache'` + tag `custom-costumes`. ADR 0003.
+- Disfraces scrapeados: `POST /api/scrapear` (portón del evento, Nova Lite traduce/modera, foto con el mismo `ImageProvider`, persistencia en Supabase `custom_costumes` + bucket `catalogo`, slugs `s-…`; sin variables de Supabase responde 503). Lecturas con `'use cache'` + tag `custom-costumes`. ADR 0003.
 - Detalle completo: `docs/architecture.md`.
 
 ## Conventions

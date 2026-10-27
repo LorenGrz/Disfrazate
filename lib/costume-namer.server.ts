@@ -23,11 +23,17 @@ Reply with ONLY one JSON object, no markdown, no extra text, exactly with these 
 {"allowed": true, "reason": "...", "name": "...", "promptEn": "...", "tagline": "..."}
 Rules:
 1. "name": a tidy costume name in Rioplatense Spanish, 2 to 40 characters, without the words "disfraz de".
-2. "promptEn": a short visual description in English of a Halloween costume a person can wear. Be concrete: shape, colors, materials. Maximum 200 characters. No brand names or proper names.
+2. "promptEn": ALWAYS in English, never Spanish. A short visual description of a wearable Halloween costume: a person wearing a fabric or foam suit shaped like the thing, with the face visible. Be concrete and accurate about the real object (shape, colors, materials); use your knowledge of Argentine culture (alfajor, colectivo, mate, etc.). Maximum 200 characters. No brand names or proper names.
 3. "tagline": one short, clean Argentine joke, maximum 70 characters, in Spanish.
 4. "reason": one short sentence in Spanish explaining the decision.
-5. Set "allowed" to false (and you may leave name, promptEn and tagline empty) for: specific real people (politicians, celebrities, anyone with a first and last name); sexual content; hate or discrimination; drugs; graphic violence beyond typical Halloween; anything involving minors.
-6. Branded or copyrighted characters are allowed, but describe a GENERIC version in "name" and "promptEn" without the brand or character name (for example a famous mouse becomes "cartoon mouse with white gloves and big round ears").`;
+5. Allowed by default: objects, food, vehicles, buses, places, animals, plants, professions, monsters, fantasy creatures, concepts and inside jokes are ALWAYS allowed.
+6. Set "allowed" to false (and you may leave name, promptEn and tagline empty) ONLY for: specific real people (politicians, celebrities, anyone with a first and last name); sexual content; hate or discrimination; drugs; graphic violence beyond typical Halloween; anything involving minors.
+7. Branded or copyrighted characters are ALLOWED: set "allowed" to true and describe a GENERIC version in "name" and "promptEn" without the brand or character name.
+
+Examples (input -> output):
+<query>colectivo 60</query> -> {"allowed": true, "reason": "Es un colectivo, un objeto.", "name": "Colectivo 60", "promptEn": "boxy foam costume shaped like a red and white Buenos Aires city bus with windows and wheels, worn around the body with the face visible", "tagline": "Para en todas las esquinas menos en la tuya."}
+<query>Spiderman</query> -> {"allowed": true, "reason": "Personaje con marca: va la versión genérica.", "name": "Héroe arácnido", "promptEn": "red and blue spider-themed hero bodysuit with black web lines and a generic spider emblem, face uncovered", "tagline": "Un gran disfraz conlleva una gran tintorería."}
+<query>Javier Milei</query> -> {"allowed": false, "reason": "Es una persona real.", "name": "", "promptEn": "", "tagline": ""}`;
 
 const namerOutput = z.discriminatedUnion("allowed", [
   z.object({
