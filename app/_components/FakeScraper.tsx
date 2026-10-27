@@ -9,7 +9,7 @@ type Run = { id: number; query: string };
 
 function logLines(query: string, found: number): string[] {
   return [
-    "Despertando a 4.812.337 scrapers...",
+    "Despertando a 1.284 scrapers...",
     `Buscando "${query}" en Disfraces Don Ramón`,
     "Esquivando un cartel de vuelvo en 5 minutos",
     "Ignorando Temu por razones legales",
