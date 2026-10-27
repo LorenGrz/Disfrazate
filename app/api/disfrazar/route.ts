@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { disfrazarBody } from "@/lib/api-schemas";
 import { errorResponse, readJson } from "@/lib/api-response.server";
-import { getCostume } from "@/lib/catalog";
+import { getAnyCostume } from "@/lib/costumes.server";
 import { hasEventAccess } from "@/lib/event-gate.server";
 import { getImageProvider } from "@/lib/image-provider.server";
 import { buildPrompt } from "@/lib/prompt";
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     return errorResponse(400, "invalid", "Pedido inválido");
   }
   const { photo, costumeSlug, sceneId, styleId } = parsed.data;
-  const costume = getCostume(costumeSlug);
+  const costume = await getAnyCostume(costumeSlug);
   const scene = getScene(sceneId);
   const style = getStyle(styleId);
   if (!costume || !scene || !style) {

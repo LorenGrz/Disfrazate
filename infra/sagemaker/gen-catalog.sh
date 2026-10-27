@@ -33,6 +33,7 @@ while IFS=$'\t' read -r slug prompt_en; do
     continue
   fi
   seed=$(( $(printf '%s' "$slug" | cksum | cut -d' ' -f1) % 100000 + SEED_OFFSET ))
+  # Copia de buildProductPrompt() en lib/prompt.ts: si cambia uno, cambia el otro.
   prompt="E-commerce product listing photo, photorealistic real-life photograph, not an illustration, not a cartoon, not a 3D render. A real adult model wearing a complete ${prompt_en} Halloween costume, full body from head to shoes, standing facing the camera, neutral relaxed expression, plain light grey seamless studio background, soft even lighting, sharp focus. Do not render any text, letters, logos or watermarks."
   jq -n --rawfile img "${TMP}/ref.b64" --arg p "$prompt" --argjson s "$seed" \
     '{image: $img, prompt: $p, width: 768, height: 960, steps: 4, seed: $s}' >"${TMP}/body.json"

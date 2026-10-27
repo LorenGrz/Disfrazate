@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { findCostumes } from "@/lib/catalog";
+import { matchesCostume } from "@/lib/catalog";
 
 export type CostumeOption = {
   slug: string;
   name: string;
+  tagline: string;
   field: 1 | 2 | 3;
   photo: string;
 };
@@ -16,15 +17,14 @@ type CostumePickerProps = {
   onPick: (slug: string) => void;
 };
 
-/** Filtro por texto (con `findCostumes`) sobre una grilla compacta de miniaturas. */
+/** Filtro por texto (con `matchesCostume`) sobre una grilla compacta de miniaturas. */
 export function CostumePicker({ costumes, onPick }: CostumePickerProps) {
   const [filter, setFilter] = useState("");
   const trimmed = filter.trim();
-  const matching = new Set(findCostumes(trimmed).map(({ slug }) => slug));
   const visible =
     trimmed === ""
       ? costumes
-      : costumes.filter((costume) => matching.has(costume.slug));
+      : costumes.filter((costume) => matchesCostume(costume, trimmed));
 
   return (
     <div className="flex flex-col gap-6">

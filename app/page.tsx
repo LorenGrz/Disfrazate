@@ -72,10 +72,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <p className="text-small gutter mt-2 opacity-80">
-          Foto de archivo: nenes con máscaras en el carnaval infantil danés, c.
-          1930.
-        </p>
         <div className="mt-4">
           <Ticker />
         </div>

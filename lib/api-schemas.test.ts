@@ -29,6 +29,26 @@ describe("escenasBody", () => {
   });
 });
 
+describe("costumeSlug format", () => {
+  it("should accept static and scraped slugs when validating the format", () => {
+    for (const costumeSlug of ["vampiro", "s-pancho-gigante"]) {
+      expect(escenasBody.safeParse({ costumeSlug }).success).toBe(true);
+    }
+  });
+
+  it("should reject garbage slugs when validating the format", () => {
+    for (const costumeSlug of [
+      "",
+      "S-Pancho",
+      "s-",
+      "s-../x",
+      "x".repeat(80),
+    ]) {
+      expect(escenasBody.safeParse({ costumeSlug }).success).toBe(false);
+    }
+  });
+});
+
 describe("disfrazarBody", () => {
   const valid = {
     photo: jpegB64(1000),
