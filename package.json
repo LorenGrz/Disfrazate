@@ -7,15 +7,22 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "endpoint:up": "bash infra/sagemaker/deploy.sh up",
+    "endpoint:down": "bash infra/sagemaker/deploy.sh down",
+    "endpoint:status": "bash infra/sagemaker/deploy.sh status",
+    "endpoint:logs": "bash infra/sagemaker/deploy.sh logs"
   },
   "dependencies": {
+    "@aws-sdk/client-sagemaker-runtime": "^3.1156.0",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

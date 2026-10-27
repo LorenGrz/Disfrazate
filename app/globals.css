@@ -1,26 +1,250 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Paleta orange-sky-lime. Todo sale de estos tokens. */
+@theme {
+  --ground: #161615;
+  --ground-raised: #262624;
+  --ink: #f2f2f2;
+  --field-ink: #111111;
+  --accent: #de194b;
+  --accent-ink: #ffffff;
+  --field-1: #ff8126;
+  --field-2: #4db3ff;
+  --field-3: #c5f53d;
+
+  --font-sans: var(--font-archivo), Arial, Helvetica, sans-serif;
+
+  /* Cinco tamaños, ni uno más. */
+  --text-mega: clamp(4rem, 21.2vw, 26rem);
+  --text-h2: clamp(2.5rem, 1rem + 6.4vw, 7.5rem);
+  --text-h3: clamp(1.625rem, 1.1rem + 1.5vw, 2.5rem);
+  --text-body: 1.125rem;
+  --text-small: 1rem;
+
+  --gutter: clamp(1rem, 0.4rem + 2.4vw, 2rem);
+  --section-gap: clamp(5rem, 10vw, 9rem);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--ground);
+  color: var(--ink);
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.gutter {
+  padding-inline: var(--gutter);
+}
+
+.section-gap {
+  margin-top: var(--section-gap);
+}
+
+/* Display: Archivo comprimida, pesada, en mayúsculas. */
+.display {
+  font-weight: 800;
+  font-stretch: 62%;
+  font-variation-settings: "wdth" 62;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.86;
+}
+
+.surface {
+  background: var(--ground);
+  color: var(--ink);
+}
+
+.field-1 {
+  background: var(--field-1);
+  color: var(--field-ink);
+}
+.field-2 {
+  background: var(--field-2);
+  color: var(--field-ink);
+}
+.field-3 {
+  background: var(--field-3);
+  color: var(--field-ink);
+}
+
+/* Botones: planos, un solo color, esquinas rectas. */
+.btn {
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  background: var(--ink);
+  color: var(--field-ink);
+  font-size: var(--text-body);
+  font-weight: 800;
+  font-stretch: 62%;
+  font-variation-settings: "wdth" 62;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-dark {
+  background: var(--field-ink);
+  color: var(--ink);
+}
+
+.text-input {
+  width: 100%;
+  padding: 1rem;
+  background: var(--ground-raised);
+  color: var(--ink);
+  font: inherit;
+  border: 0;
+  border-radius: 0;
+}
+.text-input::placeholder {
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+.well {
+  background: var(--ground-raised);
+}
+
+.btn:has(:focus-visible) {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+.text-input:focus-visible {
+  outline-color: var(--field-3);
+}
+
+.link-plain {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 0.08em;
+}
+
+/* Ticker de borde: logs falsos de scraping. */
+.ticker {
+  overflow: hidden;
+  background: var(--accent);
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+}
+.ticker-group {
+  display: flex;
+  flex: none;
+  gap: 3rem;
+  padding: 0.75rem 1.5rem 0.75rem 0;
+  font-weight: 500;
+}
+
+/* Tiles del catálogo */
+.tile-media {
+  transform-origin: center;
+}
+
+/* Log del scraper falso: líneas escalonadas con animation-delay. */
+.log-line {
+  padding-block: 0.125rem;
+}
+
+/* Movimiento: solo si el usuario no pidió reducirlo. */
+@media (prefers-reduced-motion: no-preference) {
+  .press,
+  .tile-media {
+    transition:
+      transform 160ms ease-out,
+      opacity 160ms ease-out;
+  }
+  .press:hover {
+    opacity: 0.86;
+  }
+  .press:active {
+    transform: translateY(2px);
+    opacity: 1;
+  }
+  .tile-link:hover .tile-media {
+    transform: scale(1.04);
+  }
+  .tile-link:active .tile-media {
+    transform: scale(0.99);
+  }
+
+  .ticker-track {
+    animation: ticker 48s linear infinite;
+  }
+  .zoom {
+    animation: zoom 28s ease-in-out infinite alternate;
+  }
+
+  .log-line,
+  .log-result {
+    animation: fade-in 1ms linear both;
+    animation-delay: calc(var(--i, 0) * 420ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 6%) entry
+        calc(38% + var(--i, 0) * 6%);
+    }
+  }
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
