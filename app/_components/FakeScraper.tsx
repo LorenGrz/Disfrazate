@@ -3,12 +3,13 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { findCostumes, costumes } from "@/lib/catalog";
 import { Results } from "./Results";
+import { ScrapeCostume } from "./ScrapeCostume";
 
 type Run = { id: number; query: string };
 
 function logLines(query: string, found: number): string[] {
   return [
-    "Despertando a 4.812.337 scrapers...",
+    "Despertando a 1.284 scrapers...",
     `Buscando "${query}" en Disfraces Don Ramón`,
     "Esquivando un cartel de vuelvo en 5 minutos",
     "Ignorando Temu por razones legales",
@@ -72,6 +73,7 @@ export function FakeScraper() {
             style={{ "--i": lines.length } as CSSProperties}
           >
             <Results query={run.query} results={results} />
+            <ScrapeCostume query={run.query} hasResults={results.length > 0} />
           </div>
         </div>
       ) : null}

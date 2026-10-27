@@ -39,3 +39,18 @@ export async function hasEventAccess(): Promise<boolean> {
   const value = (await cookies()).get(EVENT_COOKIE)?.value;
   return value !== undefined && safeEqual(value, expected);
 }
+
+const THIRTY_DAYS = 60 * 60 * 24 * 30;
+
+/** Si el código es válido, deja la cookie del evento y devuelve true. Compartido por la Server Action y /api/evento. */
+export async function grantEventAccess(code: string): Promise<boolean> {
+  if (!isValidEventCode(code)) return false;
+  (await cookies()).set(EVENT_COOKIE, eventToken(code), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: THIRTY_DAYS,
+    path: "/",
+  });
+  return true;
+}

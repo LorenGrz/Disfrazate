@@ -4,14 +4,16 @@ import { Suspense } from "react";
 import {
   categoryLabels,
   costumeCategories,
-  costumes,
   isCostumeCategory,
+  type CostumeCategory,
 } from "@/lib/catalog";
+import { listAllCostumes } from "@/lib/costumes.server";
 import { CostumeGrid } from "@/app/_components/CostumeGrid";
 
 export const metadata: Metadata = {
   title: "Todos los disfraces",
-  description: `Los ${costumes.length} disfraces de nuestro archivo de scrapeo falso, con filtro por categoría.`,
+  description:
+    "Los disfraces de nuestro archivo de scrapeo falso, con filtro por categoría.",
 };
 
 async function Catalog({
@@ -19,7 +21,13 @@ async function Catalog({
 }: Pick<PageProps<"/disfraces">, "searchParams">) {
   const { cat } = await searchParams;
   // Categoría inválida o repetida: se muestran todos.
-  const active = isCostumeCategory(cat) ? cat : undefined;
+  const costumes = await listAllCostumes();
+  const hasScraped = costumes.some(({ category }) => category === "scrapeados");
+  const categories: readonly CostumeCategory[] = hasScraped
+    ? ["scrapeados", ...costumeCategories]
+    : costumeCategories;
+  const active =
+    isCostumeCategory(cat) && categories.includes(cat) ? cat : undefined;
   const visible = active
     ? costumes.filter((costume) => costume.category === active)
     : costumes;
@@ -37,7 +45,7 @@ async function Catalog({
               Todos ({costumes.length})
             </Link>
           </li>
-          {costumeCategories.map((category) => (
+          {categories.map((category) => (
             <li key={category}>
               <Link
                 href={`/disfraces?cat=${category}`}

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { costumes, getCostume } from "@/lib/catalog";
+import { getAnyCostume, listAllCostumes } from "@/lib/costumes.server";
 import { hasEventAccess } from "@/lib/event-gate.server";
 import { unlockEvent } from "./actions";
 import { Probador } from "./_components/Probador";
@@ -9,18 +9,21 @@ async function Gate({
 }: Pick<PageProps<"/disfrazate">, "searchParams">) {
   const { disfraz, error } = await searchParams;
   const slug = typeof disfraz === "string" ? disfraz : undefined;
-  const costume = slug ? getCostume(slug) : undefined;
+  const costume = slug ? await getAnyCostume(slug) : undefined;
 
   if (await hasEventAccess()) {
     return (
       <Probador
         initialSlug={costume?.slug}
-        costumes={costumes.map(({ slug, name, field, photo }) => ({
-          slug,
-          name,
-          field,
-          photo: photo.src,
-        }))}
+        costumes={(await listAllCostumes()).map(
+          ({ slug, name, tagline, field, photo }) => ({
+            slug,
+            name,
+            tagline,
+            field,
+            photo: photo.src,
+          }),
+        )}
       />
     );
   }
