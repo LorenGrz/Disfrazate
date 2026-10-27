@@ -8,7 +8,7 @@ App para el evento SIDEQUEST: "scrapea" (de mentira) tiendas buscando disfraces 
 
 ## Stack
 
-Next.js 16 (App Router, `cacheComponents`), React 19, Tailwind 4, pnpm, Vitest. Fuente Archivo (`next/font`). Generación de imágenes: AWS Bedrock Nova Canvas (fase 2, pendiente).
+Next.js 16 (App Router, `cacheComponents`), React 19, Tailwind 4, pnpm, Vitest. Fuente Archivo (`next/font`). Generación de imágenes: endpoint de SageMaker con FLUX.2 klein 4B (ADR 0002), `IMAGE_PROVIDER=demo` para desarrollar sin AWS. Validación con zod.
 
 ## Commands
 
@@ -17,7 +17,8 @@ See AGENTS.md for the full table (dev/test/lint/typecheck/format/format:check).
 ## Architecture
 
 - `lib/catalog.ts`: 24 disfraces, tiendas falsas, `mercadoLibreUrl`, `findCostumes` (datos puros + tests).
-- `app/page.tsx` landing (hero, buscador `FakeScraper`, drop, "lo que decimos/hacemos", CTA); `app/disfraz/[slug]`, `app/buscar` (fallback sin JS), `app/disfrazate` (stub hasta fase 2).
+- `app/page.tsx` landing (hero, buscador `FakeScraper`, drop, "lo que decimos/hacemos", CTA); `app/disfraz/[slug]`, `app/buscar` (fallback sin JS), `app/disfrazate` (portón con `EVENT_CODE` + `Probador` con cámara, 4 escenas en paralelo).
+- `lib/*.server.ts` (env, proveedor de imágenes, portón, contadores en memoria), `lib/scenes.ts` + `pick-scenes.ts` + `prompt.ts`, `app/api/{escenas,disfrazar}`.
 - `proxy.ts`: reescribe slugs inexistentes para que `/disfraz/<x>` devuelva 404 real (con `cacheComponents` + `loading.tsx` el `notFound()` llega con 200).
 - Detalle completo: `docs/architecture.md`.
 
@@ -28,7 +29,11 @@ See the stack conventions section in AGENTS.md for stack-specific rules.
 ## Known issues
 
 - Los tiles del catálogo sin foto muestran solo el nombre; en fase 2 se reemplazan por las imágenes de referencia de cada disfraz.
-- Vitest no tiene alias `@/`: tests e imports de `lib/` usan rutas relativas.
+- Vitest tiene `vitest.config.mts` con el alias `@/` y un stub de `server-only`; aun así `lib/` usa rutas relativas.
+- Los contadores (escenas, generaciones) están en memoria: se reinician con el proceso y no se comparten entre instancias serverless hasta la fase 3 (Supabase).
+- El `demoProvider` lee `public/demo/` con `fs`; en Vercel solo sirve para desarrollo.
+- El endpoint de SageMaker cobra por hora: apagarlo con `pnpm endpoint:down` después del evento.
+- La cámara de la compu (`getUserMedia`) necesita https o localhost; la UI no se probó en celulares reales.
 
 ## Repo facts
 
@@ -36,4 +41,4 @@ See the stack conventions section in AGENTS.md for stack-specific rules.
 - Base branch: dev (main is release-only) — full git rules + where each is enforced: "Workflow contract" in AGENTS.md
 - Project number: 2
 
-Last validated: 2026-10-26
+Last validated: 2026-10-27
