@@ -390,9 +390,9 @@ export const styles: readonly Style[] = [
   },
   {
     id: "poster-80s",
-    label: "Póster de película de los 80",
+    label: "Película de los 80",
     prompt:
-      "Style: 1980s movie poster, hand-painted illustration, dramatic lighting, bold retro colors",
+      "Style: 1980s movie still, hand-painted illustration look, dramatic lighting, bold retro colors, no text, no title, no letters",
   },
   {
     id: "render-3d",
@@ -404,7 +404,7 @@ export const styles: readonly Style[] = [
     id: "camara-seguridad",
     label: "Cámara de seguridad",
     prompt:
-      "Style: black and white security camera footage with a timestamp overlay, low resolution, high angle",
+      "Style: black and white security camera footage, wide-angle lens, low resolution, high angle, no text",
   },
   {
     id: "oleo",
@@ -413,10 +413,10 @@ export const styles: readonly Style[] = [
       "Style: Renaissance oil painting, rich chiaroscuro, craquelure texture, ornate gold frame feeling",
   },
   {
-    id: "revista",
-    label: "Tapa de revista",
+    id: "editorial",
+    label: "Producción de moda",
     prompt:
-      "Style: glossy magazine cover with a bold masthead, cover lines and professional studio lighting",
+      "Style: glossy high-fashion editorial photo, professional studio lighting, dramatic pose, no text, no logos",
   },
 ];
 

@@ -16,7 +16,8 @@ ROLE_NAME="disfrazate-sagemaker-exec"
 ROLE_ARN="arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}"
 ENDPOINT="disfrazate-flux"
 NAME_PREFIX="disfrazate-flux-"
-INSTANCE_TYPE="ml.g6.xlarge"
+# ml.g5.xlarge (A10G, US$1,408/h): la g6 no tuvo capacidad en us-east-1 el 2026-10-27.
+INSTANCE_TYPE="${INSTANCE_TYPE:-ml.g5.xlarge}"
 IMAGE="763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:2.6.0-gpu-py312-cu124-ubuntu22.04-sagemaker"
 HF_MODEL_ID="black-forest-labs/FLUX.2-klein-4B"
 LOG_GROUP="/aws/sagemaker/Endpoints/${ENDPOINT}"
@@ -162,7 +163,7 @@ cmd_up() {
     echo "Recordá correr 'deploy.sh down' para no seguir pagando." >&2
     exit 1
   fi
-  echo "Endpoint ${ENDPOINT} InService. Cobra ~US\$1,13/h: apagalo con 'deploy.sh down' al terminar."
+  echo "Endpoint ${ENDPOINT} InService. Cobra por hora (${INSTANCE_TYPE}: g5 ~US\$1,41, g6 ~US\$1,13): apagalo con 'deploy.sh down' al terminar."
 }
 
 cmd_down() {

@@ -1,10 +1,10 @@
 # Endpoint de SageMaker (FLUX.2 [klein] 4B)
 
-Endpoint propio `disfrazate-flux` para generar los disfraces. Modelo `black-forest-labs/FLUX.2-klein-4B` (Apache 2.0) sobre el DLC de PyTorch 2.6, en una instancia `ml.g6.xlarge` (GPU L4 24 GB).
+Endpoint propio `disfrazate-flux` para generar los disfraces. Modelo `black-forest-labs/FLUX.2-klein-4B` (Apache 2.0) sobre el DLC de PyTorch 2.6, en una instancia `ml.g5.xlarge` (GPU L4 24 GB).
 
 ## Advertencia de costo
 
-**Mientras el endpoint existe cobra US$1,1267 por hora, lo uses o no.** Prendelo solo para pruebas y para el evento, y **apagalo siempre después de usar**:
+**Mientras el endpoint existe cobra US$1,408 por hora, lo uses o no.** Prendelo solo para pruebas y para el evento, y **apagalo siempre después de usar**:
 
 ```bash
 pnpm endpoint:down
