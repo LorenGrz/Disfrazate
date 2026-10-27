@@ -1,5 +1,5 @@
 const lines: readonly string[] = [
-  "4.812.337 tiendas revisadas",
+  "1.284 tiendas revisadas",
   "ignorando Temu por razones legales",
   "encontramos 14 vampiros en Quilmes",
   "Todo por $999.999 no contestó el teléfono",

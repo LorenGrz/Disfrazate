@@ -1,13 +1,12 @@
 "use client";
 
-import { useReducer } from "react";
+import { useLayoutEffect, useReducer, useRef } from "react";
 import { requestImage, requestScenes } from "./api-client";
+import { CostumePicker, type CostumeOption } from "./CostumePicker";
 import { GeneratingLog } from "./GeneratingLog";
 import { PhotoStep } from "./PhotoStep";
 import { initialState, reducer, type SceneRef } from "./probador-state";
 import { ResultCard } from "./ResultCard";
-
-type CostumeOption = { slug: string; name: string; field: 1 | 2 | 3 };
 
 type ProbadorProps = {
   /** Slug que viene de ?disfraz=, ya validado en el server. */
@@ -18,6 +17,27 @@ type ProbadorProps = {
 export function Probador({ initialSlug, costumes }: ProbadorProps) {
   const [state, dispatch] = useReducer(reducer, initialSlug, initialState);
   const { view, run } = state;
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Con cacheComponents Next oculta la ruta con <Activity> en vez de
+  // desmontarla: el useReducer sobrevive a la navegación. Al ocultarse se
+  // ejecuta este cleanup (sincronización con el ciclo de vida de Activity):
+  // cancela lo que esté en vuelo y vuelve al estado inicial.
+  useLayoutEffect(
+    () => () => {
+      abortRef.current?.abort();
+      abortRef.current = null;
+      dispatch({ type: "reset", slug: initialSlug });
+    },
+    [initialSlug],
+  );
+
+  function currentSignal(): AbortSignal {
+    if (abortRef.current === null || abortRef.current.signal.aborted) {
+      abortRef.current = new AbortController();
+    }
+    return abortRef.current.signal;
+  }
 
   function nameOf(slug: string): string {
     return costumes.find((costume) => costume.slug === slug)?.name ?? slug;
@@ -30,7 +50,12 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
     photo: string,
     scene: SceneRef,
   ) {
-    const outcome = await requestImage({ photo, costumeSlug: slug, scene });
+    const outcome = await requestImage({
+      photo,
+      costumeSlug: slug,
+      scene,
+      signal: currentSignal(),
+    });
     dispatch({
       type: "card",
       run: forRun,
@@ -42,7 +67,7 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
   }
 
   async function generateAll(forRun: number, slug: string, photo: string) {
-    const outcome = await requestScenes(slug, 4, []);
+    const outcome = await requestScenes(slug, 4, [], currentSignal());
     if (!outcome.ok) {
       dispatch({ type: "fatal", run: forRun, message: outcome.message });
       return;
@@ -88,6 +113,7 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
       slug,
       1,
       cards.map((card) => card.scene.id),
+      currentSignal(),
     );
     const scene = outcome.ok ? outcome.value[0] : undefined;
     if (!outcome.ok || !scene) {
@@ -134,19 +160,11 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
       {view.step === "elegir" ? (
         <section className="flex flex-col gap-8">
           <h2 className="display text-h3">¿De qué te disfrazás?</h2>
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {costumes.map((costume) => (
-              <li key={costume.slug}>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "pick", slug: costume.slug })}
-                  className={`field-${costume.field} display text-h3 press h-full w-full cursor-pointer p-4 text-left`}
-                >
-                  {costume.name}
-                </button>
-              </li>
-            ))}
-          </ul>
+          <CostumePicker
+            key={run}
+            costumes={costumes}
+            onPick={(slug) => dispatch({ type: "pick", slug })}
+          />
         </section>
       ) : null}
 
@@ -174,7 +192,7 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
           </h2>
           {view.step === "generando" ? <GeneratingLog /> : null}
           {view.cards ? (
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               {view.cards.map((card, index) => (
                 <ResultCard
                   key={index}

@@ -21,12 +21,14 @@ function errorMessage(body: unknown): string {
 async function post(
   url: string,
   payload: unknown,
+  signal: AbortSignal,
 ): Promise<ApiOutcome<unknown>> {
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload),
+      signal,
     });
     const body: unknown = await response.json().catch(() => undefined);
     if (!response.ok) {
@@ -60,8 +62,13 @@ export async function requestScenes(
   costumeSlug: string,
   count: number,
   exclude: readonly string[],
+  signal: AbortSignal,
 ): Promise<ApiOutcome<SceneRef[]>> {
-  const outcome = await post("/api/escenas", { costumeSlug, count, exclude });
+  const outcome = await post(
+    "/api/escenas",
+    { costumeSlug, count, exclude },
+    signal,
+  );
   if (!outcome.ok) return outcome;
   const raw = isRecord(outcome.value) ? outcome.value.scenes : undefined;
   const scenes = Array.isArray(raw)
@@ -77,13 +84,18 @@ export async function requestImage(input: {
   photo: string;
   costumeSlug: string;
   scene: SceneRef;
+  signal: AbortSignal;
 }): Promise<ApiOutcome<string>> {
-  const outcome = await post("/api/disfrazar", {
-    photo: input.photo,
-    costumeSlug: input.costumeSlug,
-    sceneId: input.scene.id,
-    styleId: input.scene.styleId,
-  });
+  const outcome = await post(
+    "/api/disfrazar",
+    {
+      photo: input.photo,
+      costumeSlug: input.costumeSlug,
+      sceneId: input.scene.id,
+      styleId: input.scene.styleId,
+    },
+    input.signal,
+  );
   if (!outcome.ok) return outcome;
   const image = isRecord(outcome.value) ? outcome.value.image : undefined;
   if (typeof image !== "string") {

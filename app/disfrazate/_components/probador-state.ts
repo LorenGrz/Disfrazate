@@ -39,7 +39,7 @@ export type Action =
   | { type: "fatal"; run: number; message: string }
   | { type: "card"; run: number; index: number; status: CardStatus }
   | { type: "swap"; run: number; index: number; scene: SceneRef }
-  | { type: "reset" };
+  | { type: "reset"; slug?: string };
 
 export function initialState(slug: string | undefined): State {
   return {
@@ -154,6 +154,8 @@ export function reducer(state: State, action: Action): State {
       return { ...state, view: { ...view, cards } };
     }
     case "reset":
-      return { run: state.run + 1, view: { step: "elegir" } };
+      // Vuelve al estado inicial (con la preselección de la URL, si hay) y
+      // descarta cualquier respuesta en vuelo con un `run` nuevo.
+      return { run: state.run + 1, view: initialState(action.slug).view };
   }
 }

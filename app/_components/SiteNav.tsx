@@ -7,7 +7,7 @@ export function SiteNav() {
         Disfrazate
       </Link>
       <nav aria-label="Principal" className="flex items-center gap-6">
-        <Link href="/#drop" className="press hidden sm:inline">
+        <Link href="/disfraces" className="press hidden sm:inline">
           El drop
         </Link>
         <Link href="/#buscador" className="press hidden sm:inline">

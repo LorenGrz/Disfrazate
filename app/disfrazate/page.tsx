@@ -15,10 +15,11 @@ async function Gate({
     return (
       <Probador
         initialSlug={costume?.slug}
-        costumes={costumes.map(({ slug, name, field }) => ({
+        costumes={costumes.map(({ slug, name, field, photo }) => ({
           slug,
           name,
           field,
+          photo: photo.src,
         }))}
       />
     );
