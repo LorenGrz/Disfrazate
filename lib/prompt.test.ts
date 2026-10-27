@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getCostume } from "./catalog";
-import { buildPrompt } from "./prompt";
+import { buildPrompt, buildProductPrompt } from "./prompt";
 import { getScene, getStyle } from "./scenes";
 
 function sample() {
@@ -32,5 +32,13 @@ describe("buildPrompt", () => {
     const prompt = buildPrompt(sample());
     expect(prompt).toContain("same facial expression");
     expect(prompt).not.toContain("funny but wholesome");
+  });
+});
+
+describe("buildProductPrompt", () => {
+  it("should include the description and demand a photographic result when building the prompt", () => {
+    const prompt = buildProductPrompt("giant hot dog costume");
+    expect(prompt).toContain("giant hot dog costume");
+    expect(prompt).toContain("photorealistic");
   });
 });

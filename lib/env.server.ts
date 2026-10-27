@@ -8,6 +8,9 @@ const optional = <T extends z.ZodType>(schema: T) =>
     schema.optional(),
   );
 
+const defaulted = <T extends z.ZodType>(schema: T) =>
+  z.preprocess((value) => (value === "" ? undefined : value), schema);
+
 const schema = z
   .object({
     IMAGE_PROVIDER: z.enum(["sagemaker", "demo"]).default("demo"),
@@ -17,6 +20,14 @@ const schema = z
     SAGEMAKER_ENDPOINT: z.string().min(1).default("disfrazate-flux"),
     EVENT_CODE: optional(z.string().min(1)),
     MAX_GENERATIONS: optional(z.coerce.number().int().positive()),
+    NEXT_PUBLIC_SUPABASE_URL: optional(z.url()),
+    SUPABASE_SERVICE_ROLE_KEY: optional(z.string().min(1)),
+    BEDROCK_TEXT_MODEL: defaulted(
+      z.string().min(1).default("amazon.nova-micro-v1:0"),
+    ),
+    MAX_CUSTOM_COSTUMES: defaulted(
+      z.coerce.number().int().positive().default(100),
+    ),
   })
   .superRefine((env, ctx) => {
     if (env.IMAGE_PROVIDER !== "sagemaker") return;

@@ -1,14 +1,36 @@
 import { z } from "zod";
 import { getCostume } from "./catalog";
+import { isCustomSlug } from "./custom-costume";
+import { QUERY_MAX, QUERY_MIN, isValidQuery } from "./scrape-query";
 import { getScene, getStyle } from "./scenes";
 
 export const MAX_PHOTO_BYTES = 1.5 * 1024 * 1024;
 /** Largo máximo del base64 que decodifica a MAX_PHOTO_BYTES. */
 const MAX_PHOTO_B64_LENGTH = Math.ceil((MAX_PHOTO_BYTES * 4) / 3) + 4;
 
+/**
+ * Valida el formato: un slug del catálogo estático o uno scrapeado (`s-…`).
+ * Que el scrapeado exista se resuelve en la ruta con `getAnyCostume`.
+ */
 const costumeSlug = z
   .string()
-  .refine((slug) => getCostume(slug) !== undefined, "disfraz inexistente");
+  .refine(
+    (slug) => getCostume(slug) !== undefined || isCustomSlug(slug),
+    "disfraz inexistente",
+  );
+
+export const scrapearBody = z.object({
+  query: z
+    .string()
+    .trim()
+    .min(QUERY_MIN)
+    .max(QUERY_MAX)
+    .refine(isValidQuery, "texto inválido"),
+});
+
+export const eventoBody = z.object({
+  code: z.string().trim().min(1).max(100),
+});
 
 export const escenasBody = z.object({
   costumeSlug,

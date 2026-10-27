@@ -93,6 +93,10 @@ body {
   cursor: pointer;
   text-decoration: none;
 }
+.btn-small {
+  padding: 0.75rem 1rem;
+  font-size: var(--text-small);
+}
 .btn-accent {
   background: var(--accent);
   color: var(--accent-ink);

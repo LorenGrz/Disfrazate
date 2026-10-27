@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { escenasBody } from "@/lib/api-schemas";
 import { errorResponse, readJson } from "@/lib/api-response.server";
+import { getAnyCostume } from "@/lib/costumes.server";
 import { hasEventAccess } from "@/lib/event-gate.server";
 import { pickScenes } from "@/lib/pick-scenes";
 import { getUsageStore } from "@/lib/usage-store.server";
@@ -11,6 +12,9 @@ export async function POST(request: Request) {
   }
   const parsed = escenasBody.safeParse(await readJson(request));
   if (!parsed.success) {
+    return errorResponse(400, "invalid", "Pedido inválido");
+  }
+  if ((await getAnyCostume(parsed.data.costumeSlug)) === undefined) {
     return errorResponse(400, "invalid", "Pedido inválido");
   }
 

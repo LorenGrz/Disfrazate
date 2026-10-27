@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  costumes,
-  getCostume,
-  mercadoLibreUrl,
-  storesFor,
-} from "@/lib/catalog";
+import { costumes, mercadoLibreUrl, storesFor } from "@/lib/catalog";
+import { getAnyCostume } from "@/lib/costumes.server";
 import { formatARS, formatCount } from "@/lib/format";
 import Link from "next/link";
 import { Specimen } from "@/app/_components/Specimen";
@@ -18,7 +14,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/disfraz/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const costume = getCostume(slug);
+  const costume = await getAnyCostume(slug);
   if (!costume) return { title: "Disfraz no encontrado" };
   return {
     title: costume.name,
@@ -30,7 +26,7 @@ export default async function CostumePage({
   params,
 }: PageProps<"/disfraz/[slug]">) {
   const { slug } = await params;
-  const costume = getCostume(slug);
+  const costume = await getAnyCostume(slug);
   if (!costume) notFound();
 
   const stores = storesFor(costume);
@@ -45,6 +41,11 @@ export default async function CostumePage({
           className="w-full max-w-[30rem]"
         />
         <div className="flex flex-col items-start gap-6">
+          {costume.category === "scrapeados" ? (
+            <p className="text-small font-medium">
+              Scrapeado por alguien del evento
+            </p>
+          ) : null}
           <h1 className="display text-h2">{costume.name}</h1>
           <p className="max-w-xl text-h3 font-medium leading-tight">
             {costume.tagline}

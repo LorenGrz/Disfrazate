@@ -8,8 +8,11 @@ export type CostumeCategory =
   | "animales"
   | "genericos"
   | "argentinidad"
-  | "absurdos";
+  | "absurdos"
+  /** Disfraces creados desde el buscador (viven en Supabase, no en este archivo). */
+  | "scrapeados";
 
+/** Categorías del catálogo estático. "scrapeados" se suma aparte en la UI. */
 export const costumeCategories: readonly CostumeCategory[] = [
   "terror",
   "criaturas",
@@ -31,6 +34,7 @@ export const categoryLabels: Readonly<Record<CostumeCategory, string>> = {
   genericos: "Personajes",
   argentinidad: "Argentinidad",
   absurdos: "Absurdos",
+  scrapeados: "Scrapeados por ustedes",
 };
 
 export type CostumePhoto = {
@@ -39,7 +43,10 @@ export type CostumePhoto = {
 };
 
 export function isCostumeCategory(value: unknown): value is CostumeCategory {
-  return costumeCategories.some((category) => category === value);
+  return (
+    value === "scrapeados" ||
+    costumeCategories.some((category) => category === value)
+  );
 }
 
 export type Costume = {
@@ -75,7 +82,7 @@ export function slugify(text: string): string {
 }
 
 /** Quita acentos y mayúsculas para comparar. */
-function fold(text: string): string {
+export function fold(text: string): string {
   return text
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
@@ -722,13 +729,21 @@ export function getCostume(slug: string): Costume | undefined {
   return costumes.find((costume) => costume.slug === slug);
 }
 
-/** Búsqueda sin acentos ni mayúsculas sobre nombre, slug y tagline. */
-export function findCostumes(text: string): Costume[] {
+/** Coincidencia sin acentos ni mayúsculas sobre nombre, slug y tagline. */
+export function matchesCostume(
+  costume: Pick<Costume, "name" | "slug" | "tagline">,
+  text: string,
+): boolean {
   const needle = fold(text);
-  if (needle === "") return [];
-  return costumes.filter((costume) =>
-    fold(`${costume.name} ${costume.slug} ${costume.tagline}`).includes(needle),
+  if (needle === "") return false;
+  return fold(`${costume.name} ${costume.slug} ${costume.tagline}`).includes(
+    needle,
   );
+}
+
+/** Búsqueda en el catálogo estático. */
+export function findCostumes(text: string): Costume[] {
+  return costumes.filter((costume) => matchesCostume(costume, text));
 }
 
 const storeDefs: readonly { name: string; note: string; shipping: string }[] = [
@@ -764,7 +779,7 @@ const storeDefs: readonly { name: string; note: string; shipping: string }[] = [
   },
 ];
 
-function hash(text: string): number {
+export function hash(text: string): number {
   let value = 5381;
   for (const char of text) {
     value = ((value * 33) ^ (char.codePointAt(0) ?? 0)) >>> 0;

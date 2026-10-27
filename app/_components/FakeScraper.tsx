@@ -3,6 +3,7 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { findCostumes, costumes } from "@/lib/catalog";
 import { Results } from "./Results";
+import { ScrapeCostume } from "./ScrapeCostume";
 
 type Run = { id: number; query: string };
 
@@ -72,6 +73,7 @@ export function FakeScraper() {
             style={{ "--i": lines.length } as CSSProperties}
           >
             <Results query={run.query} results={results} />
+            <ScrapeCostume query={run.query} hasResults={results.length > 0} />
           </div>
         </div>
       ) : null}
