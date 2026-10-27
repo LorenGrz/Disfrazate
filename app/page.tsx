@@ -26,20 +26,6 @@ const featured: readonly Costume[] = featuredSlugs
   .map((slug) => getCostume(slug))
   .filter((costume) => costume !== undefined);
 
-const said: readonly string[] = [
-  "Scraping cuántico distribuido en 190 países",
-  "Inteligencia artificial de última generación",
-  "Precios en tiempo real de millones de tiendas",
-  "Envíos a todo el planeta",
-];
-
-const did: readonly string[] = [
-  `Un archivo con ${costumes.length} disfraces`,
-  "Un filtro que se hace el distraído con las tildes",
-  "Precios inventados con mucho cariño",
-  "Un link a MercadoLibre. Ese sí es de verdad.",
-];
-
 export default function Home() {
   return (
     <main>
@@ -104,38 +90,6 @@ export default function Home() {
             Ver los {costumes.length} disfraces
           </Link>
         </p>
-      </section>
-
-      <section className="section-gap field-2 py-[var(--section-gap)]">
-        <div className="gutter">
-          <h2 className="reveal display text-h2">
-            Lo que decimos y lo que hacemos
-          </h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
-            <div
-              className="reveal py-6 md:pr-6"
-              style={{ "--i": 1 } as CSSProperties}
-            >
-              <h3 className="font-medium">Lo que decimos</h3>
-              <ul className="text-h3 display mt-4 space-y-5">
-                {said.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className="reveal surface p-6"
-              style={{ "--i": 2 } as CSSProperties}
-            >
-              <h3 className="font-medium">Lo que hacemos</h3>
-              <ul className="text-h3 display mt-4 space-y-5">
-                {did.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section className="field-3 flex min-h-svh items-center">

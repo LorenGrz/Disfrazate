@@ -24,7 +24,7 @@ Next.js 16 server-rendered. La landing y el catálogo son Server Components sobr
 
 ## Data model
 
-Supabase (proyecto `disfrazate`): tabla `custom_costumes` (lectura pública por RLS, escritura con la secret key) y bucket público `catalogo` (JPEG ≤ 1 MB); migración en `supabase/migrations/`. Tipo `Costume` en `lib/catalog.ts` (los scrapeados usan la categoría `scrapeados`). Los contadores de escenas y de generaciones viven en memoria del proceso (`UsageStore`); en fase 3 pasan a Supabase.
+Supabase (proyecto `disfrazate`): tabla `custom_costumes` (lectura pública por RLS, escritura con la secret key) y bucket público `catalogo` (JPEG ≤ 1 MB); migración en `supabase/migrations/`. Tipo `Costume` en `lib/catalog.ts` (los scrapeados usan la categoría `scrapeados`). Tabla `generations` (RLS sin políticas, solo secret key) y bucket privado `participantes` (JPEG ≤ 2 MB, `<sha256>/original.jpg` y `<sha256>/<escena>-<estilo>-<seed>.jpg`): fotos de participantes y resultados, a borrar a los 30 días del evento. Los contadores de escenas y de generaciones viven en memoria del proceso (`UsageStore`); en fase 3 pasan a Supabase.
 
 ## Key flows
 
@@ -33,14 +33,14 @@ Supabase (proyecto `disfrazate`): tabla `custom_costumes` (lectura pública por 
 - **Buscar**: `FakeScraper` (form) → estado en el submit → log CSS escalonado → `findCostumes` + link real a MercadoLibre. Sin JS: GET `/buscar?q=`.
 - **Ver disfraz**: `/disfraz/[slug]` (estático vía `generateStaticParams`) → "Ver publicación" (MercadoLibre) o DISFRAZATE → `/disfrazate?disfraz=<slug>`.
 
-- **DISFRAZATE**: `/disfrazate` sin cookie `dz_event` muestra el form del código (Server Action `unlockEvent`, comparación en tiempo constante) → con acceso, `Probador`: elegir disfraz → foto (input con `capture` o `getUserMedia` en el click; resize en el cliente; consentimiento) → `POST /api/escenas` (4 escenas de 4 categorías, las menos usadas) → 4 × `POST /api/disfrazar` en paralelo (cada tarjeta se actualiza sola; "reintentar" y "otra escena" por tarjeta). El `Probador` se resetea al ocultarse la ruta: con `cacheComponents` Next la conserva en `<Activity hidden>`, así que un `useLayoutEffect` cleanup aborta los fetch en vuelo (`AbortController` en un ref) y despacha `reset` (vuelve a `elegir`, o a `foto` si la URL trae `?disfraz=`). La foto nunca se guarda ni se loguea. Errores JSON `{ error: { kind, message } }`: 401 sin acceso, 400 inválido, 429 tope de generaciones, 503 endpoint apagado, 504 timeout, 422 rechazada.
+- **DISFRAZATE**: `/disfrazate` sin cookie `dz_event` muestra el form del código (Server Action `unlockEvent`, comparación en tiempo constante) → con acceso, `Probador`: elegir disfraz → foto (input con `capture` o `getUserMedia` en el click; resize en el cliente; consentimiento) → `POST /api/escenas` (4 escenas de 4 categorías, las menos usadas) → 4 × `POST /api/disfrazar` en paralelo (cada tarjeta se actualiza sola; "reintentar" y "otra escena" por tarjeta). El `Probador` se resetea al ocultarse la ruta: con `cacheComponents` Next la conserva en `<Activity hidden>`, así que un `useLayoutEffect` cleanup aborta los fetch en vuelo (`AbortController` en un ref) y despacha `reset` (vuelve a `elegir`, o a `foto` si la URL trae `?disfraz=`). La foto nunca se loguea; con el consentimiento de `/terminos`, después de responder (`after()`) `saveGeneration` guarda la original y el resultado en el bucket privado `participantes` y una fila en `generations` (ADR 0004). Errores JSON `{ error: { kind, message } }`: 401 sin acceso, 400 inválido, 429 tope de generaciones, 503 endpoint apagado, 504 timeout, 422 rechazada.
 
 - **Scrapear disfraz**: sin resultados (o desde "¿No es lo que buscabas?") el buscador muestra el botón → `POST /api/scrapear` (cookie del evento; sin ella 401 y el cliente pide el código a `POST /api/evento` y reintenta). El servidor valida el texto, devuelve el existente si coincide, aplica el tope `MAX_CUSTOM_COSTUMES`, Nova Lite devuelve `{name, promptEn, tagline}` o rechaza (422), SageMaker genera la foto de producto con la referencia gris, se sube a Storage, se inserta la fila y se revalida el tag `custom-costumes` con `revalidateTag(tag, { expire: 0 })` (en Route Handlers no existe `updateTag`). Sin variables de Supabase responde 503 "El scraper está apagado". `/disfraz/s-…` pasa por `proxy.ts` por formato y la página hace `notFound()` (un slug scrapeado inexistente devuelve 200 con la página de no encontrado). ADR 0003.
 
 ## External services
 
 - AWS SageMaker (endpoint `disfrazate-flux`, FLUX.2 klein 4B; ADR 0002). Se cobra por hora prendido: `pnpm endpoint:up` / `endpoint:down`.
-- Supabase (Postgres + Storage): disfraces scrapeados (ADR 0003).
+- Supabase (Postgres + Storage): disfraces scrapeados (ADR 0003) y fotos de participantes (ADR 0004).
 - Amazon Bedrock (Nova Lite, Converse API): traduce y modera el texto del scrapeo.
 - MercadoLibre: solo links a búsquedas (`mercadoLibreUrl`), sin API.
 - Wikimedia Commons: origen de las fotos de archivo (descargadas al repo).
