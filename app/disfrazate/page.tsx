@@ -14,6 +14,7 @@ async function Gate({
   if (await hasEventAccess()) {
     return (
       <Probador
+        key={costume?.slug ?? "elegir"}
         initialSlug={costume?.slug}
         costumes={(await listAllCostumes()).map(
           ({ slug, name, tagline, field, photo }) => ({

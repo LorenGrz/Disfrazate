@@ -175,6 +175,12 @@ input:focus-visible {
 
 /* Movimiento: solo si el usuario no pidió reducirlo. */
 @media (prefers-reduced-motion: no-preference) {
+  .camera-flash {
+    animation: camera-flash 420ms ease-out;
+  }
+  .countdown {
+    animation: countdown-pop 900ms ease-out both;
+  }
   .press,
   .tile-media {
     transition:
@@ -250,5 +256,28 @@ input:focus-visible {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes camera-flash {
+  from {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes countdown-pop {
+  from {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
   }
 }

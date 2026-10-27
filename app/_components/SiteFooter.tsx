@@ -10,7 +10,6 @@ export function SiteFooter() {
       <div className="gutter mt-10 grid gap-10">
         <div>
           <h2 className="display text-h3">Hecho para SIDEQUEST</h2>
-          <p className="text-small mt-4">No scrapeamos nada. Todavía.</p>
         </div>
       </div>
     </footer>

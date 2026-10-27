@@ -99,7 +99,7 @@ proxy.ts (middleware)            portón con EVENT_CODE vía cookie, para que na
 
 - **Foto:** `<input type="file" accept="image/*" capture="environment">` en vez de `getUserMedia`. Funciona en celulares, no necesita `useEffect` y es lo más robusto en un evento.
 - **Endpoint de imágenes:** las imágenes salen de un Route Handler y no de una Server Action, por el tamaño del payload y para poder hacer 4 requests en paralelo. Esto se registra en ADR `0002`.
-- **Privacidad:** la foto original **nunca se guarda**. Solo se sube al bucket `muro` la imagen generada que el usuario elige publicar.
+- **Privacidad:** ~~la foto original nunca se guarda~~ (reemplazado por ADR 0004: se guarda en un bucket privado con consentimiento). Solo se sube al bucket `muro` la imagen generada que el usuario elige publicar.
 - **Supabase:**
   - `wall_posts(id, created_at, image_path, costume_id, scene_id, caption)`: lectura pública vía RLS y escritura solo desde el server con la service role.
   - Realtime activado sobre `wall_posts`.

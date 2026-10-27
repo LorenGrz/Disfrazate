@@ -34,6 +34,7 @@ See the stack conventions section in AGENTS.md for stack-specific rules.
 - Los contadores (escenas, generaciones) están en memoria: se reinician con el proceso y no se comparten entre instancias serverless hasta la fase 3 (Supabase).
 - El `demoProvider` lee `public/demo/` con `fs`; en Vercel solo sirve para desarrollo.
 - El endpoint de SageMaker cobra por hora: apagarlo con `pnpm endpoint:down` después del evento.
+- Las fotos de los participantes y las imágenes generadas se guardan en el bucket privado `participantes` + tabla `generations` (ADR 0004, `/terminos`). Hay que borrarlas a mano dentro de los 30 días posteriores al evento.
 - La cámara de la compu (`getUserMedia`) necesita https o localhost; la UI no se probó en celulares reales.
 
 ## Repo facts

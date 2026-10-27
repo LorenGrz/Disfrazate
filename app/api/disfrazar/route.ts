@@ -1,16 +1,18 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { disfrazarBody } from "@/lib/api-schemas";
 import { errorResponse, readJson } from "@/lib/api-response.server";
 import { getAnyCostume } from "@/lib/costumes.server";
 import { hasEventAccess } from "@/lib/event-gate.server";
 import { getImageProvider } from "@/lib/image-provider.server";
+import { saveGeneration } from "@/lib/participant-photos.server";
 import { buildPrompt } from "@/lib/prompt";
 import { getScene, getStyle } from "@/lib/scenes";
 import { getUsageStore } from "@/lib/usage-store.server";
 
 export const maxDuration = 60;
 
-// La foto del usuario nunca se loguea ni se guarda: solo pasa al proveedor.
+// La foto nunca se loguea. Con el consentimiento de /terminos, la foto y el
+// resultado se guardan en un bucket privado de Supabase (ADR 0004), después de responder.
 export async function POST(request: Request) {
   if (!(await hasEventAccess())) {
     return errorResponse(401, "unauthorized", "Falta el código del evento");
@@ -37,6 +39,16 @@ export async function POST(request: Request) {
       prompt: buildPrompt({ costume, scene, style }),
     });
     if (result.ok) {
+      after(() =>
+        saveGeneration({
+          photoJpegB64: photo,
+          imageJpegB64: result.value.jpegB64,
+          costumeSlug,
+          sceneId,
+          styleId,
+          seed: result.value.seed,
+        }),
+      );
       return NextResponse.json({
         image: `data:image/jpeg;base64,${result.value.jpegB64}`,
         seed: result.value.seed,
