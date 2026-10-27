@@ -318,7 +318,8 @@ const seeds: readonly Seed[] = [
   {
     name: "Banana",
     category: "comida",
-    promptEn: "full-body costume shaped like a giant curved yellow banana fruit with brown tips, the face showing through an oval opening near the top",
+    promptEn:
+      "full-body costume shaped like a giant curved yellow banana fruit with brown tips, the face showing through an oval opening near the top",
     tagline: "Amarilla, curva y totalmente innecesaria.",
     priceFrom: 6100,
     priceTo: 92000,
