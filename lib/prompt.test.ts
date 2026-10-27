@@ -32,6 +32,7 @@ describe("buildPrompt", () => {
     const prompt = buildPrompt(sample());
     expect(prompt).toContain("same facial expression");
     expect(prompt).not.toContain("funny but wholesome");
+    expect(prompt).not.toMatch(/pout|smil|laugh|grin/i);
   });
 });
 

@@ -12,6 +12,8 @@ A new agent session should understand this project from these files alone, in th
 4. `docs/architecture.md` - overview, modules, data model, key flows, external services, env, deploy.
 5. `docs/decisions/` - ADRs: why a non-trivial trade-off was decided the way it was.
 6. `docs/superpowers/specs/` and `docs/superpowers/plans/` - what is being built and how, per unit of work.
+7. `docs/runbook-evento.md` - "encendé la app" / "apagá la app" (GPU on/off) for the event day.
+8. `docs/prompts.md` - every AI prompt the app sends, with history and lessons. Update it in the same PR as any prompt change.
 
 ## Purpose
 
