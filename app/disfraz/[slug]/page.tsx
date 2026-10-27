@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
-  costumeCaption,
   costumes,
   getCostume,
   mercadoLibreUrl,
@@ -35,25 +34,16 @@ export default async function CostumePage({
   if (!costume) notFound();
 
   const stores = storesFor(costume);
-  const caption = costumeCaption(costume);
 
   return (
     <main className="gutter pb-10">
-      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-        <div>
-          <Specimen
-            costume={costume}
-            large
-            preload
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="aspect-square"
-          />
-          {caption ? (
-            <p className="text-small mt-3 opacity-80">
-              Foto de archivo: {caption}. No es un producto a la venta.
-            </p>
-          ) : null}
-        </div>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,30rem)_1fr] lg:gap-12">
+        <Specimen
+          costume={costume}
+          preload
+          sizes="(min-width: 1024px) 480px, 100vw"
+          className="w-full max-w-[30rem]"
+        />
         <div className="flex flex-col items-start gap-6">
           <h1 className="display text-h2">{costume.name}</h1>
           <p className="max-w-xl text-h3 font-medium leading-tight">

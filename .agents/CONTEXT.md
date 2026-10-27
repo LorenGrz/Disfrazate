@@ -16,8 +16,8 @@ See AGENTS.md for the full table (dev/test/lint/typecheck/format/format:check).
 
 ## Architecture
 
-- `lib/catalog.ts`: 24 disfraces, tiendas falsas, `mercadoLibreUrl`, `findCostumes` (datos puros + tests).
-- `app/page.tsx` landing (hero, buscador `FakeScraper`, drop, "lo que decimos/hacemos", CTA); `app/disfraz/[slug]`, `app/buscar` (fallback sin JS), `app/disfrazate` (portón con `EVENT_CODE` + `Probador` con cámara, 4 escenas en paralelo).
+- `lib/catalog.ts`: 60 disfraces en 8 categorías (`category`), tiendas falsas, `mercadoLibreUrl`, `findCostumes` (datos puros + tests). Fotos 4:5 en `public/catalogo/<slug>.jpg`; `pnpm catalog:prompts` lista los prompts.
+- `app/page.tsx` landing (hero, buscador `FakeScraper`, drop con 12 destacados, "lo que decimos/hacemos", CTA); `app/disfraces` (60 disfraces, filtro `?cat=`), `app/disfraz/[slug]`, `app/buscar` (fallback sin JS), `app/disfrazate` (portón con `EVENT_CODE` + `Probador` con cámara, 4 escenas en paralelo; se resetea con un cleanup al ocultarse la ruta por `<Activity>`).
 - `lib/*.server.ts` (env, proveedor de imágenes, portón, contadores en memoria), `lib/scenes.ts` + `pick-scenes.ts` + `prompt.ts`, `app/api/{escenas,disfrazar}`.
 - `proxy.ts`: reescribe slugs inexistentes para que `/disfraz/<x>` devuelva 404 real (con `cacheComponents` + `loading.tsx` el `notFound()` llega con 200).
 - Detalle completo: `docs/architecture.md`.
@@ -28,7 +28,7 @@ See the stack conventions section in AGENTS.md for stack-specific rules.
 
 ## Known issues
 
-- Los tiles del catálogo sin foto muestran solo el nombre; en fase 2 se reemplazan por las imágenes de referencia de cada disfraz.
+- Las fotos de `public/catalogo/` se generan aparte con el endpoint; mientras no existan el tile muestra el campo de color con el alt.
 - Vitest tiene `vitest.config.mts` con el alias `@/` y un stub de `server-only`; aun así `lib/` usa rutas relativas.
 - Los contadores (escenas, generaciones) están en memoria: se reinician con el proceso y no se comparten entre instancias serverless hasta la fase 3 (Supabase).
 - El `demoProvider` lee `public/demo/` con `fs`; en Vercel solo sirve para desarrollo.

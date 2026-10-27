@@ -55,7 +55,7 @@ export const scenes: readonly Scene[] = [
     category: "tramites",
     label: "Esperando el colectivo bajo la lluvia",
     prompt:
-      "waiting at a rainy bus stop in Buenos Aires at dusk, puddles on the street, checking the time with a resigned expression",
+      "waiting at a rainy bus stop in Buenos Aires at dusk, puddles on the street, checking the time on a wristwatch",
   },
   {
     id: "portero",
@@ -76,7 +76,7 @@ export const scenes: readonly Scene[] = [
     category: "tramites",
     label: "Atendido por un chatbot en una ventanilla",
     prompt:
-      "being attended at a service window by a clunky screen-faced chatbot robot, with a confused and polite expression",
+      "being attended at a service window by a clunky screen-faced chatbot robot with a tablet for a face",
   },
   // Laburo tech
   {
@@ -91,7 +91,7 @@ export const scenes: readonly Scene[] = [
     category: "laburo-tech",
     label: "Deploy un viernes 18 h con el server en llamas",
     prompt:
-      "in a server room at 6pm on a Friday, pressing the deploy button on a laptop while a rack of servers burns behind, panicked but determined",
+      "in a server room at 6pm on a Friday, pressing keys on a laptop while a rack of servers burns behind",
   },
   {
     id: "entrevista-senior",
@@ -105,7 +105,7 @@ export const scenes: readonly Scene[] = [
     category: "laburo-tech",
     label: "Hackathon a las 4 am entre latas",
     prompt:
-      "at a hackathon at 4 in the morning, surrounded by energy drink cans and laptops, eyes wide open, typing furiously",
+      "at a hackathon at 4 in the morning, surrounded by energy drink cans and laptops, typing furiously",
   },
   {
     id: "pitch-inversores",
@@ -148,7 +148,7 @@ export const scenes: readonly Scene[] = [
     category: "argentina-pura",
     label: "En la tribuna de la cancha",
     prompt:
-      "on the terraces of a passionate football stadium, flags and confetti all around, cheering with open arms",
+      "on the terraces of a passionate football stadium, flags and confetti all around, arms raised",
   },
   {
     id: "playa-mdq",
@@ -177,7 +177,7 @@ export const scenes: readonly Scene[] = [
     category: "cotidiano-absurdo",
     label: "Haciendo sentadillas en el gimnasio",
     prompt:
-      "doing squats with a loaded barbell in a gym full of mirrors, straining with great effort",
+      "doing squats with a loaded barbell in a gym full of mirrors, lifting with great effort",
   },
   {
     id: "yoga",
@@ -198,7 +198,7 @@ export const scenes: readonly Scene[] = [
     category: "cotidiano-absurdo",
     label: "En el sillón del dentista",
     prompt:
-      "reclined in a dentist chair under a bright lamp, mouth wide open, with the dentist's tools nearby",
+      "reclined in a dentist chair under a bright lamp, with the dentist's tools nearby",
   },
   {
     id: "platos-almuerzo",
@@ -216,11 +216,11 @@ export const scenes: readonly Scene[] = [
       "walking confidently toward the camera in slow motion while a huge fiery explosion erupts behind, cinematic action movie shot",
   },
   {
-    id: "disco-cumbia",
+    id: "baile-cumbia",
     category: "epico-cine",
-    label: "En la tapa de un disco de cumbia",
+    label: "En el escenario de un baile de cumbia",
     prompt:
-      "posing on a flashy cumbia album cover with neon lettering, glittery background and a dramatic pose",
+      "standing on a small stage at a cumbia dance night with colorful spotlights, a glitter curtain and a band playing behind",
   },
   {
     id: "alunizaje",
@@ -234,21 +234,21 @@ export const scenes: readonly Scene[] = [
     category: "epico-cine",
     label: "Llanto de telenovela",
     prompt:
-      "in a dramatic soap opera scene crying with exaggerated tears in a lavish living room, hand on forehead",
+      "in a dramatic pose with a hand on the forehead in a lavish living room with velvet curtains, like a soap opera set",
   },
   {
     id: "podio-f1",
     category: "epico-cine",
     label: "En el podio de Fórmula 1",
     prompt:
-      "on the winner's podium of a Formula 1 race holding a trophy, spraying champagne while the crowd cheers",
+      "on the winner's podium of a Formula 1 race holding a trophy, spraying champagne while the crowd watches",
   },
   {
-    id: "jefe-final",
+    id: "torneo-gamer",
     category: "epico-cine",
-    label: "Contra el jefe final de un videojuego",
+    label: "Ganando en un torneo de videojuegos",
     prompt:
-      "facing a gigantic video game final boss in an epic arena, with a health bar floating above, heroic stance",
+      "at an esports tournament stage holding a trophy, gaming chairs and big glowing screens behind",
   },
   // Eventos sociales
   {
@@ -256,7 +256,7 @@ export const scenes: readonly Scene[] = [
     category: "eventos-sociales",
     label: "Bailando el vals en un casamiento",
     prompt:
-      "dancing a waltz on the dance floor of a wedding reception, fairy lights and applauding guests",
+      "dancing a waltz on the dance floor of a wedding reception, fairy lights and guests watching",
   },
   {
     id: "cumple-pelotero",
@@ -270,7 +270,7 @@ export const scenes: readonly Scene[] = [
     category: "eventos-sociales",
     label: "En una graduación con toga",
     prompt:
-      "at a university graduation ceremony in a gown and cap, holding a diploma, tossing caps in the air",
+      "at a university graduation ceremony in a gown and cap, holding a diploma, graduates tossing caps in the air behind",
   },
   {
     id: "consorcio",
@@ -338,25 +338,25 @@ export const scenes: readonly Scene[] = [
   },
   // Formatos
   {
-    id: "foto-dni",
+    id: "cabina-fotos",
     category: "formatos",
-    label: "Foto de DNI",
+    label: "Foto carnet en la cabina de la estación",
     prompt:
-      "as an official national ID card photo, flat frontal expression against a plain light blue background, shown on an ID card layout",
+      "sitting inside a photo booth at a train station with the curtain half open, a strip of passport photos coming out of the slot",
   },
   {
-    id: "figura-accion",
+    id: "fotomulta",
     category: "formatos",
-    label: "Figura de acción en su blíster",
+    label: "Cámara de fotomulta",
     prompt:
-      "as a collectible action figure sealed in a plastic blister pack on a colorful cardboard card with a logo and accessories",
+      "caught by a speed camera on a Buenos Aires avenue at night, a bright flash and a roadside speed camera pole behind",
   },
   {
-    id: "estampilla",
+    id: "jura-bandera",
     category: "formatos",
-    label: "Estampilla postal",
+    label: "Jura de la bandera",
     prompt:
-      "as a vintage postage stamp illustration with a perforated edge, a denomination number and a postmark",
+      "at a school flag pledge ceremony in a schoolyard, standing in a line holding a small Argentine flag, a big flag pole behind",
   },
   {
     id: "foto-escolar",
@@ -370,14 +370,14 @@ export const scenes: readonly Scene[] = [
     category: "formatos",
     label: "Cámara del ascensor",
     prompt:
-      "seen from a high corner security camera inside a small elevator, fisheye distortion, awkwardly standing alone",
+      "standing alone inside a small elevator with mirrored walls and a floor button panel, shot from a high corner",
   },
   {
-    id: "cuadro-museo",
+    id: "visita-museo",
     category: "formatos",
-    label: "Cuadro de museo con visitantes mirándolo",
+    label: "Visita guiada al museo",
     prompt:
-      "as a framed painting hanging on a museum wall, with a few visitors in the foreground looking at it seriously",
+      "standing among a school tour group in a museum gallery, a tour guide pointing at a painting on the wall behind",
   },
 ];
 
@@ -390,15 +390,14 @@ export const styles: readonly Style[] = [
   },
   {
     id: "poster-80s",
-    label: "Película de los 80",
+    label: "Foto de los 80",
     prompt:
-      "Style: 1980s movie still, hand-painted illustration look, dramatic lighting, bold retro colors, no text, no title, no letters",
+      "Style: 1980s film photograph, film grain, real people, warm faded colors, no text",
   },
   {
-    id: "render-3d",
-    label: "Render 3D de animación",
-    prompt:
-      "Style: stylized 3D animated movie render, soft lighting, expressive character design",
+    id: "celular-flash-fiesta",
+    label: "Foto de celular en una fiesta",
+    prompt: "Style: candid smartphone party photo, direct flash",
   },
   {
     id: "camara-seguridad",
@@ -407,10 +406,10 @@ export const styles: readonly Style[] = [
       "Style: black and white security camera footage, wide-angle lens, low resolution, high angle, no text",
   },
   {
-    id: "oleo",
-    label: "Óleo renacentista",
+    id: "fotografo-evento",
+    label: "Foto de fotógrafo de eventos",
     prompt:
-      "Style: Renaissance oil painting, rich chiaroscuro, craquelure texture, ornate gold frame feeling",
+      "Style: professional event photographer photo, 35mm, natural colors",
   },
   {
     id: "editorial",

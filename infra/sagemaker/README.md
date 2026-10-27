@@ -1,6 +1,6 @@
 # Endpoint de SageMaker (FLUX.2 [klein] 4B)
 
-Endpoint propio `disfrazate-flux` para generar los disfraces. Modelo `black-forest-labs/FLUX.2-klein-4B` (Apache 2.0) sobre el DLC de PyTorch 2.6, en una instancia `ml.g5.xlarge` (GPU L4 24 GB).
+Endpoint propio `disfrazate-flux` para generar los disfraces. Modelo `black-forest-labs/FLUX.2-klein-4B` (Apache 2.0) sobre el DLC de PyTorch 2.6, en una instancia `ml.g5.xlarge` (GPU A10G 24 GB).
 
 ## Advertencia de costo
 
@@ -25,7 +25,9 @@ Usan el perfil `disfrazate-deploy` (overrideable con `AWS_PROFILE`), cuenta `493
 
 `up` tarda entre 10 y 20 minutos (descarga de la imagen y de los pesos). Es idempotente: si el endpoint ya existe, lo actualiza.
 
-Probar (con el endpoint InService):
+**Esperá el mensaje "listo para usar", no el InService.** SageMaker marca el endpoint InService antes de que TorchServe termine de cargar el modelo; el 2026-10-27 el primer worker se reinició y las primeras requests quedaron 90 s en cola (504 en la app). Por eso `up` invoca con una imagen chica hasta recibir 200 antes de terminar.
+
+Probar (después del "listo para usar"):
 
 ```bash
 bash infra/sagemaker/invoke.sh foto.jpg "a person dressed as a 1930s circus clown" salida.jpg
