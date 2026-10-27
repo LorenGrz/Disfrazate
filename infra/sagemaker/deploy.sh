@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Prende/apaga el endpoint de SageMaker con FLUX.2 [klein] 4B.
 # Uso: deploy.sh <up|down|status|logs>
-# ATENCIÓN: mientras el endpoint existe cobra por hora (ml.g6.xlarge). Apagalo siempre con `down`.
+# ATENCIÓN: mientras el endpoint existe cobra por hora (ml.g5.xlarge por defecto). Apagalo siempre con `down`.
 set -euo pipefail
 
 export CLICOLOR_FORCE=0
@@ -99,6 +99,37 @@ package_code() {
   rm -rf "$tmp"
 }
 
+# Invoca con una imagen chica hasta recibir 200: el worker puede seguir cargando
+# el modelo (o reiniciarse) varios minutos después de InService.
+warm_up() {
+  need magick
+  local tmp deadline attempt=0
+  tmp="$(mktemp -d)"
+  magick -size 512x512 xc:'#bdbdbd' -quality 80 "jpg:${tmp}/gray.jpg"
+  base64 -w0 "${tmp}/gray.jpg" >"${tmp}/gray.b64"
+  jq -n --rawfile img "${tmp}/gray.b64" \
+    '{image: $img, prompt: "warm-up", width: 512, height: 512, steps: 1, seed: 1}' >"${tmp}/body.json"
+  deadline=$((SECONDS + 900))
+  while ((SECONDS < deadline)); do
+    attempt=$((attempt + 1))
+    if aws sagemaker-runtime invoke-endpoint --endpoint-name "$ENDPOINT" \
+      --content-type application/json --body "fileb://${tmp}/body.json" \
+      --cli-read-timeout 70 "${tmp}/out.json" >/dev/null 2>"${tmp}/err.txt"; then
+      echo "Calentado en el intento ${attempt}."
+      rm -rf "$tmp"
+      return 0
+    fi
+    echo "Intento ${attempt}: todavía no responde ($(head -c 120 "${tmp}/err.txt" | tr '\n' ' ')). Reintento en 20 s..."
+    sleep 20
+  done
+  rm -rf "$tmp"
+  echo "El modelo no respondió en 15 minutos." >&2
+  echo "--- últimos logs ---" >&2
+  show_logs 50 >&2
+  echo "Recordá correr 'deploy.sh down' para no seguir pagando." >&2
+  exit 1
+}
+
 cmd_up() {
   need jq
   need tar
@@ -126,6 +157,7 @@ cmd_up() {
         HF_HOME: "/tmp/hf",
         SAGEMAKER_MODEL_SERVER_WORKERS: "1",
         TS_DEFAULT_RESPONSE_TIMEOUT: "120",
+        TS_DEFAULT_STARTUP_TIMEOUT: "900",
         SAGEMAKER_MODEL_SERVER_TIMEOUT: "120"
       }
     }')"
@@ -163,7 +195,9 @@ cmd_up() {
     echo "Recordá correr 'deploy.sh down' para no seguir pagando." >&2
     exit 1
   fi
-  echo "Endpoint ${ENDPOINT} InService. Cobra por hora (${INSTANCE_TYPE}: g5 ~US\$1,41, g6 ~US\$1,13): apagalo con 'deploy.sh down' al terminar."
+  echo "Endpoint InService. Calentando: InService no garantiza que el modelo ya haya cargado..."
+  warm_up
+  echo "Endpoint ${ENDPOINT} listo para usar. Cobra por hora (${INSTANCE_TYPE}: g5 ~US\$1,41, g6 ~US\$1,13): apagalo con 'deploy.sh down' al terminar."
 }
 
 cmd_down() {

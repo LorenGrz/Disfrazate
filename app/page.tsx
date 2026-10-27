@@ -1,13 +1,30 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { costumes } from "@/lib/catalog";
-import { CostumeTile } from "./_components/CostumeTile";
+import { costumes, getCostume, type Costume } from "@/lib/catalog";
+import { CostumeGrid } from "./_components/CostumeGrid";
 import { FakeScraper } from "./_components/FakeScraper";
 import { Ticker } from "./_components/Ticker";
 
-/** Tiles al doble: uno cada 6-7, elegidos para que la grilla cierre prolija. */
-const bigTiles: readonly number[] = [5, 11, 17, 21];
+/** Los 12 destacados del drop: uno o dos por categoría. */
+const featuredSlugs: readonly string[] = [
+  "vampiro",
+  "pancho",
+  "gaucho",
+  "cono-de-transito",
+  "carpincho",
+  "bruja",
+  "choripan",
+  "abuela-con-ruleros",
+  "inodoro",
+  "astronauta",
+  "dinosaurio-inflable",
+  "banana",
+];
+
+const featured: readonly Costume[] = featuredSlugs
+  .map((slug) => getCostume(slug))
+  .filter((costume) => costume !== undefined);
 
 const said: readonly string[] = [
   "Scraping cuántico distribuido en 190 países",
@@ -17,7 +34,7 @@ const said: readonly string[] = [
 ];
 
 const did: readonly string[] = [
-  "Un archivo con 24 disfraces",
+  `Un archivo con ${costumes.length} disfraces`,
   "Un filtro que se hace el distraído con las tildes",
   "Precios inventados con mucho cariño",
   "Un link a MercadoLibre. Ese sí es de verdad.",
@@ -79,19 +96,18 @@ export default function Home() {
           className="reveal mt-6 max-w-xl"
           style={{ "--i": 1 } as CSSProperties}
         >
-          Veinticuatro disfraces que scrapeamos con mucho esfuerzo. Entrá a uno
-          y mirá cuánto cuesta en tiendas que juramos que existen.
+          Doce destacados de los {costumes.length} disfraces que scrapeamos con
+          mucho esfuerzo. Entrá a uno y mirá cuánto cuesta en tiendas que
+          juramos que existen.
         </p>
-        <ul className="mt-12 grid grid-flow-dense grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-4">
-          {costumes.map((costume, index) => (
-            <CostumeTile
-              key={costume.slug}
-              costume={costume}
-              large={bigTiles.includes(index)}
-              index={index}
-            />
-          ))}
-        </ul>
+        <div className="mt-12">
+          <CostumeGrid costumes={featured} />
+        </div>
+        <p className="mt-10">
+          <Link href="/disfraces" className="btn press">
+            Ver los {costumes.length} disfraces
+          </Link>
+        </p>
       </section>
 
       <section className="section-gap field-2 py-[var(--section-gap)]">

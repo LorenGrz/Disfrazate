@@ -1,18 +1,56 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  costumeCategories,
   costumes,
   findCostumes,
   getCostume,
+  isCostumeCategory,
   mercadoLibreUrl,
   storesFor,
 } from "./catalog";
-import { credits } from "./credits";
 
 describe("catalog", () => {
-  it("should have 24 unique slugs when the catalog is loaded", () => {
+  it("should have 60 unique slugs when the catalog is loaded", () => {
     const slugs = costumes.map((costume) => costume.slug);
-    expect(slugs).toHaveLength(24);
-    expect(new Set(slugs).size).toBe(24);
+    expect(slugs).toHaveLength(60);
+    expect(new Set(slugs).size).toBe(60);
+  });
+
+  it("should keep storesScraped between 12 and 340 when the catalog is loaded", () => {
+    for (const costume of costumes) {
+      expect(costume.storesScraped).toBeGreaterThanOrEqual(12);
+      expect(costume.storesScraped).toBeLessThanOrEqual(340);
+    }
+  });
+
+  it("should derive the photo from the slug when the catalog is loaded", () => {
+    for (const costume of costumes) {
+      expect(costume.photo.src).toBe(`/catalogo/${costume.slug}.jpg`);
+    }
+  });
+
+  it("should have a photo file for every costume when the catalog is loaded", () => {
+    const missing = costumes.filter(
+      (costume) =>
+        !existsSync(path.join(process.cwd(), "public", costume.photo.src)),
+    );
+    expect(missing.map((costume) => costume.slug)).toEqual([]);
+  });
+
+  it("should use every category when the catalog is loaded", () => {
+    for (const category of costumeCategories) {
+      expect(costumes.some((costume) => costume.category === category)).toBe(
+        true,
+      );
+    }
+  });
+
+  it("should accept only known categories when validating a value", () => {
+    expect(isCostumeCategory("comida")).toBe(true);
+    expect(isCostumeCategory("nada")).toBe(false);
+    expect(isCostumeCategory(undefined)).toBe(false);
   });
 
   it("should keep every tagline within 70 characters when the catalog is loaded", () => {
@@ -48,15 +86,6 @@ describe("catalog", () => {
 
   it("should return undefined when the slug does not exist", () => {
     expect(getCostume("no-existe")).toBeUndefined();
-  });
-
-  it("should reference an existing credit when a costume has an image", () => {
-    const withImage = costumes.filter((costume) => costume.image);
-    expect(withImage.length).toBeGreaterThanOrEqual(4);
-    for (const costume of withImage) {
-      expect(costume.image?.creditId).toBeDefined();
-      expect(Object.keys(credits)).toContain(costume.image?.creditId);
-    }
   });
 
   it("should return 3 to 4 stable stores when asking twice for the same costume", () => {

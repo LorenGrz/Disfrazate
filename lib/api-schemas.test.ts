@@ -34,7 +34,7 @@ describe("disfrazarBody", () => {
     photo: jpegB64(1000),
     costumeSlug: "bruja",
     sceneId: "fila-banco",
-    styleId: "oleo",
+    styleId: "fotografo-evento",
   };
 
   it("should accept a valid body", () => {
