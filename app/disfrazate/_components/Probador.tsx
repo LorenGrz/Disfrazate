@@ -43,6 +43,10 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
     return costumes.find((costume) => costume.slug === slug)?.name ?? slug;
   }
 
+  function photoOf(slug: string): string | null {
+    return costumes.find((costume) => costume.slug === slug)?.photo ?? null;
+  }
+
   async function generateCard(
     forRun: number,
     index: number,
@@ -171,6 +175,7 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
       {view.step === "foto" ? (
         <PhotoStep
           costumeName={nameOf(view.slug)}
+          costumePhoto={photoOf(view.slug)}
           photo={view.photo}
           consent={view.consent}
           photoError={view.photoError}
