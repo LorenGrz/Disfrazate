@@ -197,7 +197,7 @@ export function Probador({ initialSlug, costumes }: ProbadorProps) {
           </h2>
           {view.step === "generando" ? <GeneratingLog /> : null}
           {view.cards ? (
-            <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {view.cards.map((card, index) => (
                 <ResultCard
                   key={index}
