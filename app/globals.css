@@ -15,7 +15,7 @@
   --font-sans: var(--font-archivo), Arial, Helvetica, sans-serif;
 
   /* Cinco tamaños, ni uno más. */
-  --text-mega: clamp(4rem, 21.2vw, 26rem);
+  --text-mega: clamp(3.75rem, 20.6vw, 26rem);
   --text-h2: clamp(2.5rem, 1rem + 6.4vw, 7.5rem);
   --text-h3: clamp(1.625rem, 1.1rem + 1.5vw, 2.5rem);
   --text-body: 1.125rem;
@@ -97,6 +97,13 @@ body {
   padding: 0.75rem 1rem;
   font-size: var(--text-small);
 }
+/* Más chico solo debajo de sm, para que el nav entre en 320 px. */
+@media (max-width: 39.999rem) {
+  .btn-compact {
+    padding: 0.75rem 1rem;
+    font-size: var(--text-small);
+  }
+}
 .btn-accent {
   background: var(--accent);
   color: var(--accent-ink);
@@ -144,6 +151,39 @@ input:focus-visible {
   text-decoration-thickness: 0.08em;
 }
 
+/* Filtros de categoría: tira deslizable a sangre en mobile, grilla desde md. */
+.filter-strip {
+  display: flex;
+  gap: 0.75rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.filter-strip > li {
+  flex: none;
+  scroll-snap-align: start;
+}
+.filter-strip .btn {
+  padding: 0.75rem 1rem;
+  font-size: var(--text-small);
+  white-space: nowrap;
+}
+@media (min-width: 48rem) {
+  .filter-strip {
+    flex-wrap: wrap;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow-x: visible;
+  }
+  .filter-strip .btn {
+    padding: 1rem 1.5rem;
+    font-size: var(--text-body);
+  }
+}
+
 /* Ticker de borde: logs falsos de scraping. */
 .ticker {
   overflow: hidden;
@@ -187,15 +227,18 @@ input:focus-visible {
       transform 160ms ease-out,
       opacity 160ms ease-out;
   }
-  .press:hover {
-    opacity: 0.86;
+  /* Solo con puntero real: en touch el :hover queda pegado después del tap. */
+  @media (hover: hover) {
+    .press:hover {
+      opacity: 0.86;
+    }
+    .tile-link:hover .tile-media {
+      transform: scale(1.04);
+    }
   }
   .press:active {
     transform: translateY(2px);
     opacity: 1;
-  }
-  .tile-link:hover .tile-media {
-    transform: scale(1.04);
   }
   .tile-link:active .tile-media {
     transform: scale(0.99);

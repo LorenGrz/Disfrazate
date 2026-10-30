@@ -65,7 +65,7 @@ async function Gate({
 
 export default function DisfrazatePage(props: PageProps<"/disfrazate">) {
   return (
-    <main className="gutter surface flex flex-1 flex-col gap-10 py-20">
+    <main className="gutter surface flex flex-1 flex-col gap-10 py-10 md:py-20">
       <h1 className="display text-h2">El probador</h1>
       <Suspense fallback={<p role="status">Abriendo el probador...</p>}>
         <Gate searchParams={props.searchParams} />

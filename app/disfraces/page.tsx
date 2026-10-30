@@ -35,7 +35,7 @@ async function Catalog({
   return (
     <>
       <nav aria-label="Categorías">
-        <ul className="flex flex-wrap gap-3">
+        <ul className="filter-strip">
           <li>
             <Link
               href="/disfraces"

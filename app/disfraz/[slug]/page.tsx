@@ -33,12 +33,13 @@ export default async function CostumePage({
 
   return (
     <main className="gutter pb-10">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,30rem)_1fr] lg:gap-12">
+      <div className="grid gap-8 md:grid-cols-[minmax(0,22rem)_1fr] lg:grid-cols-[minmax(0,30rem)_1fr] lg:gap-12">
+        {/* En mobile la foto no llena la pantalla: el nombre y los botones asoman. */}
         <Specimen
           costume={costume}
           preload
-          sizes="(min-width: 1024px) 480px, 100vw"
-          className="w-full max-w-[30rem]"
+          sizes="(min-width: 1024px) 480px, (min-width: 768px) 352px, 75vw"
+          className="w-full max-w-[min(30rem,40svh)] md:max-w-[30rem]"
         />
         <div className="flex flex-col items-start gap-6">
           {costume.category === "scrapeados" ? (
@@ -76,8 +77,23 @@ export default async function CostumePage({
 
       <section className="section-gap">
         <h2 className="display text-h2">Dónde lo scrapeamos</h2>
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[40rem] border-collapse text-left">
+        <ul className="mt-8 border-t border-current md:hidden">
+          {stores.map((store) => (
+            <li
+              key={store.name}
+              className="flex flex-col gap-1 border-b border-current/30 py-4"
+            >
+              <div className="flex items-baseline justify-between gap-4">
+                <p className="font-medium">{store.name}</p>
+                <p className="shrink-0">{formatARS(store.price)}</p>
+              </div>
+              <p className="text-small">{store.shipping}</p>
+              <p className="text-small opacity-80">{store.note}</p>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-8 hidden md:block">
+          <table className="w-full border-collapse text-left">
             <caption className="sr-only">
               Tiendas inventadas que venden {costume.name}
             </caption>
